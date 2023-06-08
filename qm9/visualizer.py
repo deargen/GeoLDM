@@ -9,7 +9,7 @@ import imageio
 
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from qm9 import bond_analyze
+from mol_gen.models.GeoLDM.qm9 import bond_analyze
 ##############
 ### Files ####
 ###########-->

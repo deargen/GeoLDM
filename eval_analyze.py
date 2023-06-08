@@ -3,26 +3,26 @@ try:
     from rdkit import Chem
 except ModuleNotFoundError:
     pass
-import utils
+from mol_gen.models.GeoLDM.utils import create_folders
 import argparse
-from qm9 import dataset
-from qm9.models import get_model, get_autoencoder, get_latent_diffusion
+from mol_gen.models.GeoLDM.qm9 import dataset
+from mol_gen.models.GeoLDM.qm9.models import get_model, get_autoencoder, get_latent_diffusion
 import os
-from equivariant_diffusion.utils import assert_mean_zero_with_mask, remove_mean_with_mask,\
+from mol_gen.models.GeoLDM.equivariant_diffusion.utils import assert_mean_zero_with_mask, remove_mean_with_mask,\
     assert_correctly_masked
 import torch
 import time
 import pickle
-from configs.datasets_config import get_dataset_info
+from mol_gen.models.GeoLDM.configs.datasets_config import get_dataset_info
 from os.path import join
-from qm9.sampling import sample
-from qm9.analyze import analyze_stability_for_molecules, analyze_node_distribution
-from qm9.utils import prepare_context, compute_mean_mad
-from qm9 import visualizer as qm9_visualizer
-import qm9.losses as losses
+from mol_gen.models.GeoLDM.qm9.sampling import sample
+from mol_gen.models.GeoLDM.qm9.analyze import analyze_stability_for_molecules, analyze_node_distribution
+from mol_gen.models.GeoLDM.qm9.utils import prepare_context, compute_mean_mad
+from mol_gen.models.GeoLDM.qm9 import visualizer as qm9_visualizer
+import mol_gen.models.GeoLDM.qm9.losses as losses
 
 try:
-    from qm9 import rdkit_functions
+    from mol_gen.models.GeoLDM.qm9 import rdkit_functions
 except ModuleNotFoundError:
     print('Not importing rdkit functions.')
 
@@ -144,7 +144,7 @@ def main(model_path="/aicenter2/mol_generation/ckpts/GeoLDM/qm9_latent2",
     device = torch.device(f"{device}" if torch.cuda.is_available() else "cpu")
     args.device = device
     dtype = torch.float32
-    utils.create_folders(args)
+    create_folders(args)
     print(args)
 
     # Retrieve QM9 dataloaders

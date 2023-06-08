@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
-from egnn.egnn_new import EGNN, GNN
-from equivariant_diffusion.utils import remove_mean, remove_mean_with_mask
+from mol_gen.models.GeoLDM.egnn.egnn_new import EGNN, GNN
+from mol_gen.models.GeoLDM.equivariant_diffusion.utils import remove_mean, remove_mean_with_mask
 import numpy as np
 
 

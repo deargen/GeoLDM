@@ -1,17 +1,17 @@
 try:
     from rdkit import Chem
-    from qm9.rdkit_functions import BasicMolecularMetrics
+    from mol_gen.models.GeoLDM.qm9.rdkit_functions import BasicMolecularMetrics
     use_rdkit = True
 except ModuleNotFoundError:
     use_rdkit = False
-import qm9.dataset as dataset
+import mol_gen.models.GeoLDM.qm9.dataset as dataset
 import torch
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as sp_stats
-from qm9 import bond_analyze
+from mol_gen.models.GeoLDM.qm9 import bond_analyze
 
 
 # 'atom_decoder': ['H', 'B', 'C', 'N', 'O', 'F', 'Al', 'Si', 'P', 'S', 'Cl', 'As', 'Br', 'I', 'Hg', 'Bi'],

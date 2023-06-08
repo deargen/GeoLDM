@@ -2,9 +2,9 @@ import torch
 from torch.distributions.categorical import Categorical
 
 import numpy as np
-from egnn.models import EGNN_dynamics_QM9, EGNN_encoder_QM9, EGNN_decoder_QM9
+from mol_gen.models.GeoLDM.egnn.models import EGNN_dynamics_QM9, EGNN_encoder_QM9, EGNN_decoder_QM9
 
-from equivariant_diffusion.en_diffusion import EnVariationalDiffusion, EnHierarchicalVAE, EnLatentDiffusion
+from mol_gen.models.GeoLDM.equivariant_diffusion.en_diffusion import EnVariationalDiffusion, EnHierarchicalVAE, EnLatentDiffusion
 
 import pickle
 from os.path import join
