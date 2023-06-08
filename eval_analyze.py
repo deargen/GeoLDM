@@ -109,7 +109,11 @@ def test(args, flow_dp, nodes_dist, device, dtype, loader, partition='Test', num
     return nll_epoch/n_samples
 
 
-def main():
+def main(model_path="/aicenter2/mol_generation/ckpts/GeoLDM/qm9_latent2", 
+         n_samples=1000,
+         batch_size_gen=100, 
+         save_to_xyz=True,
+         device="cuda:0"):
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_path', type=str, default="outputs/edm_1",
                         help='Specify model path')
@@ -121,6 +125,10 @@ def main():
                         help='Should save samples to xyz files.')
 
     eval_args, unparsed_args = parser.parse_known_args()
+    eval_args.model_path = model_path
+    eval_args.n_samples = n_samples
+    eval_args.batch_size_gen = batch_size_gen
+    eval_args.save_to_xyz = save_to_xyz
 
     assert eval_args.model_path is not None
 
@@ -133,8 +141,7 @@ def main():
     if not hasattr(args, 'aggregation_method'):
         args.aggregation_method = 'sum'
 
-    args.cuda = not args.no_cuda and torch.cuda.is_available()
-    device = torch.device("cuda" if args.cuda else "cpu")
+    device = torch.device(f"{device}" if torch.cuda.is_available() else "cpu")
     args.device = device
     dtype = torch.float32
     utils.create_folders(args)
