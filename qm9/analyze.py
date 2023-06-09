@@ -362,6 +362,7 @@ def analyze_stability_for_molecules(molecule_list, dataset_info):
         'atm_stable': fraction_atm_stable,
     }
 
+    use_rdkit = False
     if use_rdkit:
         metrics = BasicMolecularMetrics(dataset_info)
         rdkit_metrics = metrics.evaluate(processed_list)

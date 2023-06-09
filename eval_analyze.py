@@ -32,7 +32,7 @@ def check_mask_correct(variables, node_mask):
         assert_correctly_masked(variable, node_mask)
 
 
-def analyze_and_save(args, eval_args, device, generative_model,
+def analyze_and_save(args, output_dir, device, generative_model,
                      nodes_dist, prop_dist, dataset_info, n_samples=10,
                      batch_size=10, save_to_xyz=False):
     batch_size = min(batch_size, n_samples)
@@ -56,7 +56,7 @@ def analyze_and_save(args, eval_args, device, generative_model,
         if save_to_xyz:
             id_from = i * batch_size
             qm9_visualizer.save_xyz_file(
-                join(eval_args.model_path, 'eval/analyzed_molecules/'),
+                join(output_dir, 'generated_molecules/'),
                 one_hot, charges, x, dataset_info, id_from, name='molecule',
                 node_mask=node_mask)
 
@@ -113,6 +113,7 @@ def main(model_path="/aicenter2/mol_generation/ckpts/GeoLDM/qm9_latent2",
          n_samples=1000,
          batch_size_gen=100, 
          save_to_xyz=True,
+         output_dir=None,
          device="cuda:0"):
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_path', type=str, default="outputs/edm_1",
@@ -129,6 +130,7 @@ def main(model_path="/aicenter2/mol_generation/ckpts/GeoLDM/qm9_latent2",
     eval_args.n_samples = n_samples
     eval_args.batch_size_gen = batch_size_gen
     eval_args.save_to_xyz = save_to_xyz
+    print(f"Save path:{output_dir}")
 
     assert eval_args.model_path is not None
 
@@ -165,40 +167,40 @@ def main(model_path="/aicenter2/mol_generation/ckpts/GeoLDM/qm9_latent2",
 
     # Analyze stability, validity, uniqueness and novelty
     stability_dict, rdkit_metrics = analyze_and_save(
-        args, eval_args, device, generative_model, nodes_dist,
+        args, output_dir, device, generative_model, nodes_dist,
         prop_dist, dataset_info, n_samples=eval_args.n_samples,
         batch_size=eval_args.batch_size_gen, save_to_xyz=eval_args.save_to_xyz)
     print(stability_dict)
 
-    if rdkit_metrics is not None:
-        rdkit_metrics = rdkit_metrics[0]
-        print("Validity %.4f, Uniqueness: %.4f, Novelty: %.4f" % (rdkit_metrics[0], rdkit_metrics[1], rdkit_metrics[2]))
-    else:
-        print("Install rdkit roolkit to obtain Validity, Uniqueness, Novelty")
+    # if rdkit_metrics is not None:
+    #     rdkit_metrics = rdkit_metrics[0]
+    #     print("Validity %.4f, Uniqueness: %.4f, Novelty: %.4f" % (rdkit_metrics[0], rdkit_metrics[1], rdkit_metrics[2]))
+    # else:
+    #     print("Install rdkit roolkit to obtain Validity, Uniqueness, Novelty")
 
-    # In GEOM-Drugs the validation partition is named 'val', not 'valid'.
-    if args.dataset == 'geom':
-        val_name = 'val'
-        num_passes = 1
-    else:
-        val_name = 'valid'
-        num_passes = 5
+    # # In GEOM-Drugs the validation partition is named 'val', not 'valid'.
+    # if args.dataset == 'geom':
+    #     val_name = 'val'
+    #     num_passes = 1
+    # else:
+    #     val_name = 'valid'
+    #     num_passes = 5
 
-    # Evaluate negative log-likelihood for the validation and test partitions
-    val_nll = test(args, generative_model, nodes_dist, device, dtype,
-                   dataloaders[val_name],
-                   partition='Val')
-    print(f'Final val nll {val_nll}')
-    test_nll = test(args, generative_model, nodes_dist, device, dtype,
-                    dataloaders['test'],
-                    partition='Test', num_passes=num_passes)
-    print(f'Final test nll {test_nll}')
+    # # Evaluate negative log-likelihood for the validation and test partitions
+    # val_nll = test(args, generative_model, nodes_dist, device, dtype,
+    #                dataloaders[val_name],
+    #                partition='Val')
+    # print(f'Final val nll {val_nll}')
+    # test_nll = test(args, generative_model, nodes_dist, device, dtype,
+    #                 dataloaders['test'],
+    #                 partition='Test', num_passes=num_passes)
+    # print(f'Final test nll {test_nll}')
 
-    print(f'Overview: val nll {val_nll} test nll {test_nll}', stability_dict)
-    with open(join(eval_args.model_path, 'eval_log.txt'), 'w') as f:
-        print(f'Overview: val nll {val_nll} test nll {test_nll}',
-              stability_dict,
-              file=f)
+    # print(f'Overview: val nll {val_nll} test nll {test_nll}', stability_dict)
+    # with open(join(eval_args.model_path, 'eval_log.txt'), 'w') as f:
+    #     print(f'Overview: val nll {val_nll} test nll {test_nll}',
+    #           stability_dict,
+    #           file=f)
 
 
 if __name__ == "__main__":
