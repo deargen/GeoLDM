@@ -151,7 +151,7 @@ def test(
 
 
 def main(
-    model_path="/aicenter2/mol_generation/ckpts/GeoLDM/drug_latent2",
+    model_path="/aicenter2/mol_generation/ckpts/GeoLDM/drugs_latent2",
     n_samples=1000,
     batch_size_gen=100,
     save_to_xyz=True,
